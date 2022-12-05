@@ -1456,7 +1456,7 @@ end
 
 -- Skips over quickfix buf when tabbing through buffers
 -- Reason: QF appears to overwrite the <Tab> mappings
-Util.skipQFAndTerm = function(dir)
+Util.skipUnwated = function(dir)
     if dir == "prev" then
         require("cokeline/mappings").by_step("focus", "-1")
 
@@ -1474,7 +1474,7 @@ Util.skipQFAndTerm = function(dir)
                 return
             end
 
-            Util.skipQFAndTerm(dir)
+            Util.skipUnwated(dir)
         end
     else
         require "cokeline/mappings".by_step("focus", '1')
@@ -1493,7 +1493,7 @@ Util.skipQFAndTerm = function(dir)
                 return
             end
 
-            Util.skipQFAndTerm(dir)
+            Util.skipUnwated(dir)
         end
     end
 end
@@ -2191,26 +2191,23 @@ map("n", "n", "<Cmd>execute('normal! ' . v:count1 . 'n')<CR><Cmd>lua require('hl
 map("n", "N", "<Cmd>execute('normal! ' . v:count1 . 'N')<CR><Cmd>lua require('hlslens').start()<CR>")
 
 -- focus buffers
-map("n", "<Tab>", ':lua Util.skipQFAndTerm("next")<cr>')
-map("n", "<S-Tab>", ':lua Util.skipQFAndTerm("prev")<cr>')
+map("n", "<Tab>", ':lua   Util.skipUnwanted("next")<cr>')
+map("n", "<S-Tab>", ':lua Util.skipUnwanted("prev")<cr>')
 
 -- move buffers
 map("n", "<A-Tab>", '<Cmd>lua require("cokeline/mappings").by_step("switch", 1)<CR>')
 map("n", "<A-S-Tab>", '<Cmd>lua require("cokeline/mappings").by_step("switch", -1)<CR>')
 
 -- Window/buffer stuff
-map("n", "<leader>vs", "<cmd>vsplit<cr>")
 map("n", "<leader>ss", "<cmd>split<cr>")
+map("n", "<leader>sv", "<cmd>vsplit<cr>")
 
 -- nohl
-map("n", "<leader>nh", ":nohl<CR>")
-
--- notify.nvim
-map("n", "<leader>nn", "<cmd>lua require('notify').dismiss()<CR>")
+map("n", "<leader>hh", ":nohl<CR>")
 
 -- Split Terminal
-map("n", "<leader>st", "<cmd>vsplit term://" .. vim.o.shell)
-map("n", "<leader>vt", "<cmd>split term://" .. vim.o.shell)
+map("n", "<leader>St", "<cmd>vsplit term://" .. vim.o.shell)
+map("n", "<leader>st", "<cmd>split term://" .. vim.o.shell)
 
 -- Term escape
 map("t", "<A-z>", "<c-\\><c-n>")
@@ -2269,53 +2266,50 @@ map("n", "<leader>cm", ':Commentary<cr><esc>')
 map("v", "<leader>cm", ':Commentary<cr><esc>')
 
 -- nvim-tree
-map("n", "<leader>1", "<cmd>Telescope file_browser path=%:p:h<CR>")
-map("t", "<leader>1", "<cmd>Telescope file_browser path=%:p:h<CR>")
+map("n", "<leader>aa", "<cmd>Telescope file_browser path=%:p:h<CR>")
+map("t", "<leader>aa", "<cmd>Telescope file_browser path=%:p:h<CR>")
 
-map("n", "<leader>2", "<cmd>Workspace BottomPanelToggle<CR>")
-map("t", "<leader>2", "<cmd>Workspace BottomPanelToggle<CR>")
+map("n", "<leader>as", "<cmd>Workspace BottomPanelToggle<CR>")
+map("t", "<leader>as", "<cmd>Workspace BottomPanelToggle<CR>")
 
-map("n", "<leader>3", "<cmd>Workspace LeftPanelToggle<CR>")
-map("t", "<leader>3", "<cmd>Workspace LeftPanelToggle<CR>")
+map("n", "<leader>ad", "<cmd>Workspace LeftPanelToggle<CR>")
+map("t", "<leader>ad", "<cmd>Workspace LeftPanelToggle<CR>")
 
-map("n", "<leader>4", "<cmd>Workspace RightPanelToggle<CR>")
+map("n", "<leader>af", "<cmd>Workspace RightPanelToggle<CR>")
 
 -- float toggleterm
-map("n", "<leader>ft", "<cmd>lua NormalTermFloat()<CR>")
-map("t", "<leader>ft", "<cmd>lua NormalTermFloat()<CR>")
+map("n", "<leader>at", "<cmd>lua NormalTermFloat()<CR>")
+map("t", "<leader>at", "<cmd>lua NormalTermFloat()<CR>")
 
 -- Lazygit
-map("n", "<leader>lg", ":lua LazygitFloat()<cr>")
-
--- Undotree
-map("n", "<leader>ud", ":packadd undotree | :UndotreeToggle<CR>")
+map("n", "<leader>ag", ":lua LazygitFloat()<cr>")
 
 -- LSP
-map('n', '<leader>gy', '<Cmd>lua vim.lsp.buf.declaration()<CR>')
-map('n', '<leader>gd', '<Cmd>lua vim.lsp.buf.definition()<CR>')
-map('n', '<leader>gD', '<cmd>lua vim.lsp.buf.type_definition()<CR>')
-map('n', '<leader>sd', "<cmd>lua vim.lsp.buf.hover()<CR>")
-map('n', '<leader>pd', "<cmd>lua peek_definition()<CR>")
-map("n", "<leader>gr", "<cmd>lua require('telescope.builtin').lsp_references()<cr>")
-map('n', '<leader>sD', '<cmd>lua vim.diagnostic.open_float()<CR>')
-map('n', '<leader>g[', '<cmd>lua vim.diagnostic.goto_prev()<CR>')
-map('n', '<leader>g]', '<cmd>lua vim.diagnostic.goto_next()<CR>')
-map('n', '<leader>rn', "<cmd>lua vim.lsp.buf.rename()<CR>")
-map('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>')
+-- map('n', '<leader>lD', '<Cmd>lua vim.lsp.buf.declaration()<CR>')
+map('n', '<leader>lD', '<Cmd>lua vim.lsp.buf.definition()<CR>')
+-- map('n', '<leader>ld', '<cmd>lua vim.lsp.buf.type_definition()<CR>')
+map('n', '<leader>ld', "<cmd>lua vim.lsp.buf.hover()<CR>")
+map('n', '<leader>lp', "<cmd>lua peek_definition()<CR>")
+map("n", '<leader>lr', "<cmd>lua require('telescope.builtin').lsp_references()<cr>")
+map('n', '<leader>lo', '<cmd>lua vim.diagnostic.open_float()<CR>')
+map('n', '<leader>lh', '<cmd>lua vim.diagnostic.goto_prev()<CR>')
+map('n', '<leader>ll', '<cmd>lua vim.diagnostic.goto_next()<CR>')
+map('n', '<leader>ln', "<cmd>lua vim.lsp.buf.rename()<CR>")
+map('n', '<leader>la', '<cmd>lua vim.lsp.buf.code_action()<CR>')
 
 -- Telescopic Johnson
-map('n', '<leader>pr', "<cmd>lua require('telescope.builtin').live_grep()<cr>")
-map('n', '<leader>pw', "<cmd>lua require('telescope.builtin').grep_string()<cr>")
+map('n', '<leader>kr', "<cmd>lua require('telescope.builtin').live_grep()<cr>")
+map('n', '<leader>kw', "<cmd>lua require('telescope.builtin').grep_string()<cr>")
 
-map("n", "<leader>tf", "<cmd>lua require('telescope.builtin').find_files()<cr>")
-map("n", "<leader>tg", "<cmd>lua require('telescope.builtin').live_grep()<cr>")
-map("n", "<leader>tb", "<cmd>lua require('telescope.builtin').buffers()<cr>")
-map("n", "<leader>th", "<cmd>lua require('telescope.builtin').help_tags()<cr>")
+map("n", "<leader>kF", "<cmd>lua require('telescope.builtin').find_files()<cr>")
+map("n", "<leader>kg", "<cmd>lua require('telescope.builtin').live_grep()<cr>")
+map("n", "<leader>kf", "<cmd>lua require('telescope.builtin').buffers()<cr>")
+map("n", "<leader>kh", "<cmd>lua require('telescope.builtin').help_tags()<cr>")
 
-map("n", "<leader>qf", "<cmd>lua require('telescope.builtin').quickfix()<cr>")
-map('n', '<leader>ql', "<cmd>lua require('telescope.builtin').loclist()<cr>")
+map("n", "<leader>kF", "<cmd>lua require('telescope.builtin').quickfix()<cr>")
+map('n', '<leader>kL', "<cmd>lua require('telescope.builtin').loclist()<cr>")
 
-map('n', '<leader>pp', "<cmd>Telescope projects<cr>")
+map('n', '<leader>kp', "<cmd>Telescope projects<cr>")
 
 -- Debug maps
 map("n", "<leader>db", "<cmd>lua require('dap').toggle_breakpoint()<CR>")
@@ -2352,15 +2346,21 @@ map("n", "<leader>Ls", "<cmd>LspStart<CR>")
 map("n", "<leader>LS", "<cmd>LspStop<CR>")
 
 -- Fugitive
-map("n", "<leader>gfs", "<cmd>vert Git<cr>")
-map("n", "<leader>gfc", "<cmd>Git commit<cr>")
-map("n", "<leader>gfp", "<cmd>Git push<cr>")
-map("n", "<leader>gfl", "<cmd>Gclog<cr>")
+map("n", "<leader>gs", "<cmd>vert Git<cr>")
+map("n", "<leader>gc", "<cmd>Git commit<cr>")
+map("n", "<leader>gp", "<cmd>Git push<cr>")
+map("n", "<leader>gl", "<cmd>Gclog<cr>")
+
+-- gitsigns
+map("v", "<leader>hs", ":Gitsigns stage_hunk<cr>")
+map("v", "<leader>hu", ":Gitsigns reset_hunk<cr>")
+
+map("n", "<leader>hc", ":Git commit<cr>")
 
 -- Sessions
-map("n", "<leader>Ps", "<cmd>SaveSession<CR>")
-map("n", "<leader>Pl", "<cmd>SearchSession<CR>")
-map("n", "<leader>Pd", "<cmd>Autosession delete<CR>")
+map("n", "<leader>Ss", "<cmd>SaveSession<CR>")
+map("n", "<leader>Sl", "<cmd>SearchSession<CR>")
+map("n", "<leader>Sd", "<cmd>Autosession delete<CR>")
 
 -- Shift block
 map("v", "<C-K>", "xkP`[V`]")
@@ -2373,12 +2373,6 @@ map("n", "<A-Space>", "<cmd>Telescope command_palette<CR>")
 -- https://www.reddit.com/r/neovim/comments/lizyxj/how_to_get_rid_of_q/
 -- wont work if you take too long to do perform the action, but that's fine
 map("n", "q:", "<nop>")
-
--- gitsigns
-map("v", "<leader>hs", ":Gitsigns stage_hunk<cr>")
-map("v", "<leader>hu", ":Gitsigns reset_hunk<cr>")
-
-map("n", "<leader>hc", ":Git commit<cr>")
 
 -- AmBiGuOuS UsE oF UsEr-dEfInEd cOmMaNd
 vim.api.nvim_create_user_command("W", "w", {})
