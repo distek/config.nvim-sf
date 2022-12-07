@@ -1494,8 +1494,73 @@ Util.skipUnwantedBuffers = function(dir)
     end
 end
 
+DAPIDEStates = {
+    bottom = false,
+    left = false,
+    right = false
+}
+
+local function closeNvimIDEPanels()
+    if pcall(require, 'ide') then
+        local ws = require('ide.workspaces.workspace_registry').get_workspace(vim.api.nvim_get_current_tabpage())
+        if ws ~= nil then
+            local left = ws.panels[require('ide.panels.panel').PANEL_POS_LEFT]
+            local right = ws.panels[require('ide.panels.panel').PANEL_POS_RIGHT]
+            local bottom = ws.panels[require('ide.panels.panel').PANEL_POS_BOTTOM]
+
+            print(left)
+            if left ~= nil then
+                if left.is_open() then
+                    left.close()
+                    DAPIDEStates.left = true
+                end
+            end
+            if right ~= nil then
+                if right.is_open() then
+                    right.close()
+                    DAPIDEStates.right = true
+                end
+            end
+            if bottom ~= nil then
+                if bottom.is_open() then
+                    bottom.close()
+                    DAPIDEStates.bottom = true
+                end
+            end
         end
     end
+end
+
+local function restoreNvimIDEPanels()
+    if pcall(require, 'ide') then
+        local ws = require('ide.workspaces.workspace_registry').get_workspace(vim.api.nvim_get_current_tabpage())
+        if ws ~= nil then
+            local left = ws.panels[require('ide.panels.panel').PANEL_POS_LEFT]
+            local right = ws.panels[require('ide.panels.panel').PANEL_POS_RIGHT]
+            local bottom = ws.panels[require('ide.panels.panel').PANEL_POS_BOTTOM]
+            if left ~= nil then
+                if DAPIDEStates.left then
+                    left.open()
+                end
+            end
+            if right ~= nil then
+                if DAPIDEStates.right then
+                    right.open()
+                end
+            end
+            if bottom ~= nil then
+                if DAPIDEStates.bottom then
+                    bottom.open()
+                end
+            end
+        end
+    end
+end
+
+Util.dapStart = function()
+    local dapui = require("dapui")
+    closeNvimIDEPanels()
+    dapui.open()
 end
 
 Util.dapStop = function()
@@ -1507,7 +1572,8 @@ Util.dapStop = function()
     end
 
     dap.close()
-    dapui.close()
+    dapui.close({})
+    restoreNvimIDEPanels()
 end
 
 local function hexToRgb(hex_str)
@@ -2320,7 +2386,7 @@ map("n", "<leader>du", "<cmd>lua require('dap').up()<CR>")
 map("n", "<leader>drn", "<cmd>lua require('dap').run_to_cursor()<CR>")
 map("n", "<leader>dd", "<cmd>lua require('dap').down()<CR>")
 map("n", "<leader>dc", "<cmd>lua require('dap').continue()<CR>")
-map("n", "<leader>ds", "<cmd>lua require('dapui').open()<cr>")
+map("n", "<leader>ds", "<cmd>lua Util.dapStart()<cr>")
 map("n", "<leader>dS", "<cmd>lua Util.dapStop()<cr>")
 
 -- term split like any ol TWM
