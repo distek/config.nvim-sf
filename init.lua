@@ -496,6 +496,7 @@ dap.adapters.go = function(callback, config)
     end, 100)
 end
 
+
 -- https://github.com/go-delve/delve/blob/master/Documentation/usage/dlv_dap.md
 require("dapui").setup({
     icons = { expanded = "▾", collapsed = "▸" },
@@ -605,13 +606,8 @@ dap.configurations.go = {
     }
 }
 
-dap.defaults.fallback.force_external_terminal = true
-dap.defaults.fallback.external_terminal = {
-    command = '/Applications/Alacritty.app/Contents/MacOS/alacritty';
-    args = { '-e' };
-}
-
 require('nvim-dap-virtual-text').setup()
+
 -- }}}
 -- Noice{{{
 require("noice").setup({
@@ -713,7 +709,7 @@ require("noice").setup({
     },
     lsp = {
         progress = {
-            enabled = true,
+            enabled = false,
             -- Lsp Progress is formatted using the builtins for lsp_progress. See config.format.builtin
             -- See the section on formatting for more details on how to customize.
             --- @type NoiceFormat|string
@@ -795,9 +791,9 @@ require("noice").setup({
     presets = {
         -- you can enable a preset by setting it to true, or a table that will override the preset config
         -- you can also add custom presets that you can enable/disable with enabled=true
-        bottom_search = false, -- use a classic bottom cmdline for search
-        command_palette = false, -- position the cmdline and popupmenu together
-        long_message_to_split = false, -- long messages will be sent to a split
+        bottom_search = true, -- use a classic bottom cmdline for search
+        command_palette = true, -- position the cmdline and popupmenu together
+        long_message_to_split = true, -- long messages will be sent to a split
         inc_rename = false, -- enables an input dialog for inc-rename.nvim
         lsp_doc_border = false, -- add a border to hover docs and signature help
     },
@@ -1044,7 +1040,7 @@ require("tint").setup({
         local floating = vim.api.nvim_win_get_config(winid).relative ~= ""
 
         -- Do not tint `terminal` or floating windows, tint everything else
-        return buftype == "terminal" or floating
+        return false
     end
 })
 -- }}}
