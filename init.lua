@@ -15,6 +15,7 @@ end
 
 -- vim.cmd [[ packadd packer.nvim ]]
 
+-- Plugin list{{{
 require('paq') {
     "savq/paq-nvim";
     'sindrets/winshift.nvim';
@@ -1957,17 +1958,6 @@ end
 
 -- Autocommands{{{
 
--- Compile packer on save of nvim's init.lua
-vim.api.nvim_create_autocmd("BufWritePost", {
-    pattern = {
-        vim.fn.expand('~/') .. "/.config/nvim/init.lua",
-        vim.fn.expand('~/') .. "/.config/nvim/lua/*.lua"
-    },
-    callback = function()
-        require("packer").compile()
-    end
-})
-
 -- Return to previous line in file
 vim.api.nvim_create_autocmd("BufReadPost", {
     pattern = { "*" },
@@ -2035,20 +2025,6 @@ vim.api.nvim_create_autocmd("CursorMoved", {
     end
 })
 
-vim.api.nvim_create_autocmd("FocusGained", {
-    pattern = { "*" },
-    callback = function()
-        vim.cmd [[checktime]]
-    end
-})
-
-vim.api.nvim_create_autocmd("FocusGained", {
-    pattern = { "*" },
-    callback = function()
-        vim.cmd [[checktime]]
-    end
-})
-
 -- Deal with quickfix
 -- set nobuflisted and close if last window
 vim.api.nvim_create_augroup("qf", { clear = true })
@@ -2090,14 +2066,6 @@ vim.api.nvim_create_autocmd("TermOpen", {
         vim.opt_local.wrap = true
         vim.opt_local.list = true
         vim.opt_local.signcolumn = "no"
-    end,
-    group = "Terminal",
-})
-
-vim.api.nvim_create_autocmd("TermClose", {
-    pattern = { "*" },
-    callback = function()
-        vim.cmd(':call feedkeys("i")')
     end,
     group = "Terminal",
 })
@@ -2205,8 +2173,6 @@ Themes["tokyodark"] = function()
     vim.cmd "colorscheme tokyodark"
 
     local splitColor = Util.darken(Util.getColor("Normal", "bg#"), 0.8)
-
-    vim.cmd('highlight VertSplit guibg=' .. splitColor .. ' guifg=' .. splitColor)
 end
 
 Themes["monokai"] = function()
