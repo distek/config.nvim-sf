@@ -1452,7 +1452,7 @@ end
 
 -- Skips over quickfix buf when tabbing through buffers
 -- Reason: QF appears to overwrite the <Tab> mappings
-Util.skipUnwated = function(dir)
+Util.skipUnwantedBuffers = function(dir)
     if dir == "prev" then
         require("cokeline/mappings").by_step("focus", "-1")
 
@@ -1470,7 +1470,7 @@ Util.skipUnwated = function(dir)
                 return
             end
 
-            Util.skipUnwated(dir)
+            Util.skipUnwantedBuffers(dir)
         end
     else
         require "cokeline/mappings".by_step("focus", '1')
@@ -1489,7 +1489,11 @@ Util.skipUnwated = function(dir)
                 return
             end
 
-            Util.skipUnwated(dir)
+            Util.skipUnwantedBuffers(dir)
+        end
+    end
+end
+
         end
     end
 end
@@ -2187,8 +2191,8 @@ map("n", "n", "<Cmd>execute('normal! ' . v:count1 . 'n')<CR><Cmd>lua require('hl
 map("n", "N", "<Cmd>execute('normal! ' . v:count1 . 'N')<CR><Cmd>lua require('hlslens').start()<CR>")
 
 -- focus buffers
-map("n", "<Tab>", ':lua   Util.skipUnwanted("next")<cr>')
-map("n", "<S-Tab>", ':lua Util.skipUnwanted("prev")<cr>')
+map("n", "<Tab>", ':lua   Util.skipUnwantedBuffers("next")<cr>')
+map("n", "<S-Tab>", ':lua Util.skipUnwantedBuffers("prev")<cr>')
 
 -- move buffers
 map("n", "<A-Tab>", '<Cmd>lua require("cokeline/mappings").by_step("switch", 1)<CR>')
