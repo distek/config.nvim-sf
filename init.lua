@@ -108,7 +108,7 @@ local addHook = require('aftermath').addHook
 addHook({
     id = "auto-size-nvim-ide-components",
     desc = "Automatically resize (horizontally) nvim-ide components when vim is resized",
-    event = { "VimResized", "WinEnter" },
+    event = { "VimResized", "WinEnter", "WinClosed" },
     run = function()
         local panelWidth = 35
 
