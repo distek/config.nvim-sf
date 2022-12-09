@@ -113,6 +113,11 @@ addHook({
     run = function()
         local panelWidth = 35
 
+        local terminalHeight = 20
+        local bufferListHeight = 10
+        local terminalBrowserHeight = 7
+        local explorerHeight = vim.o.lines - terminalBrowserHeight - bufferListHeight - 1 - 1
+
         local function ifNameExists(n)
             for _, v in ipairs(vim.api.nvim_list_wins()) do
                 local name = vim.api.nvim_buf_get_name(vim.api.nvim_win_get_buf(v))
@@ -125,22 +130,22 @@ addHook({
 
         local exists, window = ifNameExists("component://Terminal:*")
         if exists then
-            vim.api.nvim_win_set_height(window, 20)
+            vim.api.nvim_win_set_height(window, terminalHeight)
             vim.api.nvim_win_set_width(window, panelWidth)
         end
         exists, window = ifNameExists("component://BufferList:*")
         if exists then
-            vim.api.nvim_win_set_height(window, 10)
-            vim.api.nvim_win_set_width(window, panelWidth)
-        end
-        exists, window = ifNameExists("component://Explorer:*")
-        if exists then
-            vim.api.nvim_win_set_height(window, vim.o.lines - 20 - 10 - 15 - 20 - 9)
+            vim.api.nvim_win_set_height(window, bufferListHeight)
             vim.api.nvim_win_set_width(window, panelWidth)
         end
         exists, window = ifNameExists("component://TerminalBrowser:*")
         if exists then
-            vim.api.nvim_win_set_height(window, 20)
+            vim.api.nvim_win_set_height(window, terminalBrowserHeight)
+            vim.api.nvim_win_set_width(window, panelWidth)
+        end
+        exists, window = ifNameExists("component://Explorer:*")
+        if exists then
+            vim.api.nvim_win_set_height(window, explorerHeight)
             vim.api.nvim_win_set_width(window, panelWidth)
         end
     end
