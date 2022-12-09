@@ -1293,6 +1293,7 @@ require('telescope').setup({
                 { "Toggle Left", ":Workspace LeftPanelToggle" },
                 { "Toggle Right", ":Workspace RightPanelToggle" },
                 { "Toggle Bottom", ":Workspace BottomPanelToggle" },
+                { "Swap right", "lua Util.nvimIDESwapRightPanel()" },
                 { "New Term", ":Workspace TerminalBrowser New" },
                 { "All the things", "lua CommandPaletteAllTheThings()" }
             }
@@ -1498,6 +1499,21 @@ Util.skipUnwantedBuffers = function(dir)
             Util.skipUnwantedBuffers(dir)
         end
     end
+end
+
+Util.nvimIDESwapRightPanel = function()
+    local ws = require('ide.workspaces.workspace_registry').get_workspace(vim.api.nvim_get_current_tabpage())
+    if ws == nil then
+        return
+    end
+
+    if ws.panels["right"] == ws.panel_groups["outline"] then
+        ws.swap_panel("right", "git")
+    else
+        ws.swap_panel("right", "outline")
+    end
+
+    -- ws.swap_panel(pos, group)
 end
 
 DAPIDEStates = {
