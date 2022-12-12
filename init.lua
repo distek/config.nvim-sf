@@ -97,7 +97,7 @@ require('paq') {
 }
 
 -- local/development plugins
-vim.opt.runtimepath:append("~/Programming/neovim-plugs/session-tabs.nvim")
+-- vim.opt.runtimepath:append("~/Programming/neovim-plugs/session-tabs.nvim")
 -- }}}
 
 if firstRun then
