@@ -627,13 +627,23 @@ end
 Themes = {}
 
 Themes["tokyodark"] = function()
+    local function gammaSet()
+        local hour = tonumber(os.date("%H"))
+
+        if hour < 7 or hour > 17 then
+            return "0.9"
+        elseif hour > 7 or hour < 12 then
+            return "1.0"
+        elseif hour > 12 or hour < 17 then
+            return "1.1"
+        end
+    end
+
     vim.g.tokyodark_transparent_background = false
     vim.g.tokyodark_enable_italic_comment = true
     vim.g.tokyodark_enable_italic = true
-    vim.g.tokyodark_color_gamma = "1.0" -- I wish everyone did this
+    vim.g.tokyodark_color_gamma = gammaSet() -- I wish everyone did this
     vim.cmd "colorscheme tokyodark"
-
-    local splitColor = Util.darken(Util.getColor("Normal", "bg#"), 0.8)
 end
 
 if not firstRun then
