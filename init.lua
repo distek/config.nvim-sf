@@ -1535,6 +1535,16 @@ require("noice").setup({
 				style = "solid",
 				anchor = "SW",
 			},
+			position = {
+				row = vim.fn.screenrow() + 1,
+				col = vim.fn.screenrow() + 1,
+			},
+			size = {
+				width = "auto",
+				height = "auto",
+				max_height = vim.o.lines - 10,
+				max_width = vim.o.columns - 10,
+			},
 		},
 		notify = {
 			backed = "mini",
