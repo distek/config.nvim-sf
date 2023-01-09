@@ -1,32 +1,38 @@
 #!/usr/bin/env bash
 
+echo "asdf${@}asdf"
+if echo "${@}" | grep "^tmux" &>/dev/null; then
+	"${@}"
+	exit
+fi
+
 # initial checks
 
-if ! command -v tmux &> /dev/null; then
-    echo "tmux not found, attempting to start SHELL instead"
+if ! command -v tmux &>/dev/null; then
+	echo "tmux not found, attempting to start SHELL instead"
 
-    if [ -v $SHELL ]; then
-        $SHELL "$@"
-        exit
-    fi
+	if [ -v $SHELL ]; then
+		$SHELL "$@"
+		exit
+	fi
 
-    echo "SHELL not set, exiting. Press any key (so you had a chance to see this)"
-    read
-    exit 1
+	echo "SHELL not set, exiting. Press any key (so you had a chance to see this)"
+	read
+	exit 1
 fi
 
 tmuxConfLocation=/tmp/tmux-vimterm/vimterm.conf
 
 if [ ! -d /tmp/tmux-vimterm ]; then
-    if ! mkdir /tmp/tmux-vimterm; then
-        echo "could not make tmp directory"
-        echo "press any key"
-        read
-        exit 1
-    fi
+	if ! mkdir /tmp/tmux-vimterm; then
+		echo "could not make tmp directory"
+		echo "press any key"
+		read
+		exit 1
+	fi
 fi
 
-cat > $tmuxConfLocation << EOL
+cat >$tmuxConfLocation <<EOL
 set -g default-terminal "tmux-256color"
 set -ga terminal-overrides ",*256col*:Tc"
 setw -g xterm-keys on
@@ -74,35 +80,35 @@ session=0
 
 TMUX_ARGS=(-S /tmp/tmux-vimterm/vimterm -L vimterm)
 
-if tmux ${TMUX_ARGS[@]} ls &> /dev/null; then
-    # close all unattached first
-    IFS=$'\n'
-    currentSessions=($(tmux ${TMUX_ARGS[@]} ls))
-    for s in ${currentSessions[@]}; do
-        if echo $s | grep attached &> /dev/null; then
-            continue
-        fi
+if tmux ${TMUX_ARGS[@]} ls &>/dev/null; then
+	# close all unattached first
+	IFS=$'\n'
+	currentSessions=($(tmux ${TMUX_ARGS[@]} ls))
+	for s in ${currentSessions[@]}; do
+		if echo $s | grep attached &>/dev/null; then
+			continue
+		fi
 
-        tmux ${TMUX_ARGS[@]} kill-session -t $(echo $s | cut -d ":" -f1)
-    done
+		tmux ${TMUX_ARGS[@]} kill-session -t $(echo $s | cut -d ":" -f1)
+	done
 
-    currentSessions=($(tmux ${TMUX_ARGS[@]} ls))
-    for s in ${currentSessions[@]}; do
-        if echo "$s" | grep -i "vimterm[0-9]" &> /dev/null; then
-            if tmux ${TMUX_ARGS[@]} -f $tmuxConfLocation ls -F '#{session_name}' | grep "vimterm$session" &> /dev/null; then
-                let session++
-            else
-                break
-            fi
-        fi
-    done
+	currentSessions=($(tmux ${TMUX_ARGS[@]} ls))
+	for s in ${currentSessions[@]}; do
+		if echo "$s" | grep -i "vimterm[0-9]" &>/dev/null; then
+			if tmux ${TMUX_ARGS[@]} -f $tmuxConfLocation ls -F '#{session_name}' | grep "vimterm$session" &>/dev/null; then
+				let session++
+			else
+				break
+			fi
+		fi
+	done
 fi
 
 ARGS=$(echo "$@" | sed 's/\-c//')
 if [ ! -z "$ARGS" ]; then
-    tmux ${TMUX_ARGS[@]} -f $tmuxConfLocation new-session -d -s vimterm$session "$ARGS"
+	tmux ${TMUX_ARGS[@]} -f $tmuxConfLocation new-session -d -s vimterm$session "$ARGS"
 else
-    tmux ${TMUX_ARGS[@]} -f $tmuxConfLocation new-session -d -s vimterm$session
+	tmux ${TMUX_ARGS[@]} -f $tmuxConfLocation new-session -d -s vimterm$session
 fi
 
 # if you're already in a tmux session, this isn't quite a nested tmux so we unset this so tmux doesn't complain about it
