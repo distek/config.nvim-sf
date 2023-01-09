@@ -33,6 +33,11 @@ addHook({
 				vim.api.nvim_win_set_hl_ns(window, PanelNS)
 				vim.api.nvim_win_set_width(window, panelWidth)
 			end
+
+			exists, window = Util.ifNameExists("term://.*")
+			if exists then
+				vim.api.nvim_win_set_hl_ns(window, PanelNS)
+			end
 		end
 	end,
 })
@@ -241,8 +246,8 @@ require("bufresize").setup()
 -- }}}
 -- colorful-winsep {{{
 require("colorful-winsep").setup({
-	interval = 1,
-	symbols = { "█", "█", "█", "█", "█", "█" },
+	-- symbols = { "█", "█", "█", "█", "█", "█" },
+	symbols = { "━", "┃", "┏", "┓", "┗", "┛" },
 })
 -- }}}
 -- Completion{{{
